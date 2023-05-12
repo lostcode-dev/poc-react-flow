@@ -8,7 +8,7 @@
 
 ## 📚 Descrição
 
-Realizar uma POC com o framework React Flow com os seguintes objetivos:
+Realizar uma POC com a lib React Flow com os seguintes objetivos:
 
 * Confirmar o modo como trabalhar com essas libs;
 * Definir como encapsular este projeto em outro projeto;
