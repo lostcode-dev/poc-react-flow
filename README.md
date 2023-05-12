@@ -1,5 +1,5 @@
 <h1 align="center">
-  💻<br>Blog - React Flow
+  💻<br>POC - React Flow
 </h1>
 
 ![Resultado final do projeto](public/preview.png)
@@ -10,8 +10,8 @@
 
 Realizar uma POC com o framework React Flow com os seguintes objetivos:
 
-* Confirmar o modo como trabalhar com esse framework;
-* Definir como encapsular este proojeto em outro projeto;
+* Confirmar o modo como trabalhar com essas libs;
+* Definir como encapsular este projeto em outro projeto;
 
 ---
 
