@@ -8,10 +8,10 @@
 
 ## 📚 Descrição
 
-Realizar uma POC com a lib React Flow com os seguintes objetivos:
+Propõe-se a realização de uma Prova de Conceito (POC) utilizando a biblioteca React Flow, com os seguintes objetivos:
 
-* Confirmar o modo como trabalhar com essas libs;
-* Definir como encapsular este projeto em outro projeto;
+- Confirmar a forma de trabalho com as bibliotecas mencionadas, garantindo uma compreensão adequada de seus recursos e funcionalidades.
+- Definir a melhor abordagem para encapsular este projeto dentro de outro projeto, buscando estabelecer uma estrutura que permita a reutilização e modularidade adequadas. Isso envolve identificar as melhores práticas para a integração e organização do código-fonte, visando facilitar a manutenção e evolução futura do projeto como um todo.
 
 ---
 
