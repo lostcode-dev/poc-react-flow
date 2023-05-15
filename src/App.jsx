@@ -4,7 +4,9 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-  ReactFlowProvider
+  ReactFlowProvider,
+  Panel,
+  useReactFlow
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
@@ -26,59 +28,26 @@ const nodeTypes = {
   serviceNoteNode: ServiceNoteNode,
   scriptNode: ScriptNode,
   audioMessageNode: AudioMessageNode,
-  inputDataNode: InputDataNode 
+  inputDataNode: InputDataNode
 };
 
-const initialNodes = [
-  { id: '1', type: 'smartMenuNode', position: { x: 150, y: 200 }, data: { label: '1' } },
-  { id: '2', type: 'teamNode', position: { x: 500, y: 200 }, data: { label: '1' } },
-  { id: '3', type: 'teamNode', position: { x: 500, y: 400 }, data: { label: '1' } },
-  { id: '4', type: 'serviceNoteNode', position: { x: 700, y: 300 }, data: { label: '1' } },
-];
+const initialNodes = [];
 
-const initialEdges = [
-  {
-    id: 'e1a-2',
-    source: '1',
-    target: '2',
-    sourceHandle: 'a',
-    animated: true,
-    style: { stroke: '#000' },
-  },
-  {
-    id: 'e1a-3',
-    source: '1',
-    target: '3',
-    sourceHandle: 'j',
-    animated: true,
-    style: { stroke: '#000' },
-  },
-  {
-    id: 'e2a-4',
-    source: '2',
-    target: '4',
-    animated: true,
-    style: { stroke: '#000' },
-  },
-  {
-    id: 'e3a-4',
-    source: '3',
-    target: '4',
-    animated: true,
-    style: { stroke: '#000' },
-  },
-];
+const initialEdges = [];
 
 
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+let id = initialNodes.length;
+const getId = () => `${++id}`;
+const flowKey = 'example-flow';
 
-export default function App() {
+function Flow(props) {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
+  const [firstNode, setFirstNode] = useState(1);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { setViewport } = useReactFlow();
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -92,7 +61,6 @@ export default function App() {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData('application/reactflow');
 
-      // check if the dropped element is valid
       if (typeof type === 'undefined' || !type) {
         return;
       }
@@ -102,41 +70,94 @@ export default function App() {
         y: event.clientY - reactFlowBounds.top,
       });
 
+      const id = getId();
       const newNode = {
-        id: getId(),
+        id,
         type,
         position,
-        data: { label: `${type} node` },
       };
+
+      if(id == 1) {
+        props.parentCallback(false);
+        setFirstNode(newNode);
+      }
 
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance]
   );
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = {...reactFlowInstance.toObject(), firstNode};
+      localStorage.setItem(flowKey, JSON.stringify(flow));
+      console.log(JSON.stringify(flow))
+    }
+  }, [reactFlowInstance]);
+
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem(flowKey));
+      console.log(JSON.parse(localStorage.getItem(flowKey)));
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+      }
+    };
+
+    restoreFlow();
+  }, [setNodes, setViewport]);
+
+  const onConnect = useCallback((params) => {
+    params.animated = true
+    params.style = { stroke: '#000' }
+    setEdges((eds) => addEdge(params, eds))
+  }, []);
+
+  return (
+
+    <div style={{ width: '100%', height: '100%', display: 'flex' }} className="reactflow-wrapper" ref={reactFlowWrapper}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        onInit={setReactFlowInstance}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+      >
+        <Panel position="top-right">
+          <button onClick={onSave}>Salvar</button>
+          <button onClick={onRestore}>Restaurar</button>
+        </Panel>
+        <Background variant="dots" gap={12} size={1} />
+      </ReactFlow>
+    </div>
+
+  );
+}
+
+function FlowWithProvider(props) {
+  const [disabled, setDisabled] = useState(!id);
 
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
       <ReactFlowProvider>
-        <Sidebar />
-        <div style={{ width: '100%', height: '100%', display: 'flex' }} className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-          >
-            <Background variant="dots" gap={12} size={1} />
-          </ReactFlow>
-        </div>
+        <Sidebar 
+          disabled={disabled}
+        />
+        <Flow 
+        parentCallback = {setDisabled}
+        {...props} 
+        />
       </ReactFlowProvider>
-
     </div>
   );
 }
+
+export default FlowWithProvider;
+

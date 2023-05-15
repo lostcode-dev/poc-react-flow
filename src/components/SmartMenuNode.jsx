@@ -18,8 +18,8 @@ function SmartMenuNode() {
                 <div className='border-solid border-b-2 py-1 px-4'>#5</div>
                 <div className='border-solid border-b-2 py-1 px-4'>#6</div>
                 <div className='border-solid border-b-2 py-1 px-4'>#7</div>
-                <div className='border-solid border-b-2 py-1 px-4'>#8</div>  
-                <div className='py-1 px-4'>#9</div>                
+                <div className='border-solid border-b-2 py-1 px-4'>#8</div>
+                <div className='py-1 px-4'>#9</div>
             </div>
             <Handle id="a" style={{ top: 52.5, background: '#555', width: '15px', height: '15px', borderRadius: '20%' }} type="source" position={Position.Right} />
             <Handle id="b" style={{ top: 87.5, background: '#555', width: '15px', height: '15px', borderRadius: '20%' }} type="source" position={Position.Right} />

@@ -130,3 +130,12 @@ button:focus-visible {
     max-width: 250px;
   }
 }
+
+
+div[data-id="1"] { 
+  box-shadow: -11px 2px 11px -6px rgba(0,0,0,0.75);
+}
+
+*:disabled {
+  opacity: 0.7;
+}
