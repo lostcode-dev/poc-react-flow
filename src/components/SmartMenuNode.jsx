@@ -6,7 +6,8 @@ import { FaBookOpen } from "react-icons/fa";
 function SmartMenuNode() {
     return (
         <>
-            <div className='border-solid border-2 rounded-lg bg-white'>
+            <Handle style={{ background: '#555', width: '15px', height: '15px', borderRadius: '20%' }} type="target" position={Position.Left} />
+            <div className='node border-solid border-2 rounded-lg bg-white'>
                 <div className='border-solid border-b-2 py-1 px-4' >
                     <FaBookOpen style={{ display: 'inline' }} /> <span className='ml-2'>Menu Inteligente</span>
                 </div>

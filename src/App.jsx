@@ -19,6 +19,7 @@ import ServiceNoteNode from './components/ServiceNoteNode.jsx';
 import ScriptNode from './components/ScriptNode.jsx';
 import AudioMessageNode from './components/AudioMessageNode.jsx';
 import InputDataNode from './components/InputDataNode.jsx';
+import StartNode from './components/StartNode.jsx';
 
 
 const nodeTypes = {
@@ -28,10 +29,19 @@ const nodeTypes = {
   serviceNoteNode: ServiceNoteNode,
   scriptNode: ScriptNode,
   audioMessageNode: AudioMessageNode,
-  inputDataNode: InputDataNode
+  inputDataNode: InputDataNode,
+  startNode: StartNode
 };
 
-const initialNodes = [];
+
+const initialNodes = [
+  {
+    id: '1',
+    type: 'startNode',
+    position: { x: 0, y: 0 },
+    className: 'noHaveEdges',
+  },
+];
 
 const initialEdges = [];
 
@@ -75,9 +85,10 @@ function Flow(props) {
         id,
         type,
         position,
+        className: 'noHaveEdges',
       };
 
-      if(id == 1) {
+      if (id == 1) {
         props.parentCallback(false);
         setFirstNode(newNode);
       }
@@ -88,10 +99,14 @@ function Flow(props) {
   );
 
   const onSave = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = {...reactFlowInstance.toObject(), firstNode};
+    const haveNodeWithoutEdge = reactFlowInstance.getNodes().filter((node) => node.className.includes('noHaveEdges'));
+
+    if (reactFlowInstance && !haveNodeWithoutEdge.length) {
+      const flow = { ...reactFlowInstance.toObject(), firstNode };
       localStorage.setItem(flowKey, JSON.stringify(flow));
       console.log(JSON.stringify(flow))
+    } else {
+      alert("Não é permitido salvar com Nó sem ligação.");
     }
   }, [reactFlowInstance]);
 
@@ -111,10 +126,21 @@ function Flow(props) {
   }, [setNodes, setViewport]);
 
   const onConnect = useCallback((params) => {
+    const getNodes = reactFlowInstance.getNodes();
+    let flowNodes = getNodes.map(node => {
+      if(node.id === params.source ||
+         node.id === params.target) {
+        node.className = '';
+      }
+      return node
+    })
+
+    setNodes(flowNodes || []);
+
     params.animated = true
     params.style = { stroke: '#000' }
     setEdges((eds) => addEdge(params, eds))
-  }, []);
+  }, [setNodes, reactFlowInstance]);
 
   return (
 
@@ -147,12 +173,12 @@ function FlowWithProvider(props) {
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
       <ReactFlowProvider>
-        <Sidebar 
+        <Sidebar
           disabled={disabled}
         />
-        <Flow 
-        parentCallback = {setDisabled}
-        {...props} 
+        <Flow
+          parentCallback={setDisabled}
+          {...props}
         />
       </ReactFlowProvider>
     </div>
