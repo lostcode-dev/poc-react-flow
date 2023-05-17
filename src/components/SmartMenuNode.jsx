@@ -1,15 +1,17 @@
 import React, { memo } from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, useNodeId } from 'reactflow';
 import { FaBookOpen } from "react-icons/fa";
 
 
 function SmartMenuNode() {
+    const nodeId = useNodeId();
+
     return (
         <>
             <Handle style={{ background: '#555', width: '15px', height: '15px', borderRadius: '20%' }} type="target" position={Position.Left} />
             <div className='node border-solid border-2 rounded-lg bg-white'>
                 <div className='border-solid border-b-2 py-1 px-4' >
-                    <FaBookOpen style={{ display: 'inline' }} /> <span className='ml-2'>Menu Inteligente</span>
+                    <FaBookOpen style={{ display: 'inline' }} /> <span className='ml-2'>Menu Inteligente { nodeId }</span>
                 </div>
                 <div className='border-solid border-b-2 py-1 px-4'>#0</div>
                 <div className='border-solid border-b-2 py-1 px-4'>#1</div>
