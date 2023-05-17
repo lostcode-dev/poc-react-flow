@@ -134,11 +134,8 @@ button:focus-visible {
 *:disabled {
   opacity: 0.7;
 }
-<<<<<<< HEAD
 
 .noHaveEdges .node {
   border: red;
   border-style: solid;
 }
-=======
->>>>>>> 73ce3ce699311ad55a9660fdcca86bb4312858ed
